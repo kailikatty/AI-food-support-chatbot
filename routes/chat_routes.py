@@ -94,17 +94,17 @@ def chat():
 
     # 🔥 NOT RECEIVED
     elif intent == "not_received":
-    reply = (
-        "We’re really sorry you haven’t received your order 🙏 We understand how concerning this is.\n\n"
-        "We’re checking your order right now, and if it hasn’t been delivered, we’ll make sure you receive a full refund 💚"
-    )
+        reply = (
+            "We’re really sorry you haven’t received your order 🙏 We understand how concerning this is.\n\n"
+            "We’re checking your order right now, and if it hasn’t been delivered, we’ll make sure you receive a full refund 💚"
+        )
 
     # 🔥 CANCEL ORDER
     elif intent == "cancel_order":
-    reply = (
-        "No worries at all 😊 Your order has been successfully cancelled.\n\n"
-        "If you’ve already made a payment, the refund will be processed shortly. Let us know if you need anything else 💚"
-    )
+        reply = (
+            "No worries at all 😊 Your order has been successfully cancelled.\n\n"
+            "If you’ve already made a payment, the refund will be processed shortly. Let us know if you need anything else 💚"
+        )
 
     # 🤖 FOLLOW-UP
     elif is_follow_up:
