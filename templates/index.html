@@ -68,9 +68,34 @@
     /* ✨ UPDATED MESSAGE STYLE */
     .message {
         display: flex;
-        align-items: flex-end;
-        gap: 6px;
         margin: 6px 0;
+    }
+
+    /* 👤 USER → ขวา */
+    .message.user {
+        justify-content: flex-end;
+    }
+
+    /* 🤖 BOT → ซ้าย */
+    .message.bot {
+        justify-content: flex-start;
+    }
+
+    /* ✨ เรียง bubble + avatar */
+    .message.user .bubble {
+        order: 1;
+    }
+
+    .message.user .avatar {
+        order: 2;
+    }
+
+    .message.bot .avatar {
+        order: 1;
+    }
+
+    .message.bot .bubble {
+        order: 2;
     }
 
     /* ✨ AVATAR */
