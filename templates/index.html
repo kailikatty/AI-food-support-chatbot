@@ -4,40 +4,120 @@
     <title>Food Support Chat</title>  
     <style>
         html, body {
-            margin: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-        #messages {
-            flex: 1;
-            overflow-y: auto;
-        }
-        
-    .typing {
-        display: inline-block;
-        font-style: italic;
-    }
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
 
-    /* 🔥 container หลัก */
+/* container */
+.chat-container {
+    max-width: 500px;
+    height: 100vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* header */
+.header {
+    background: #1fa855;
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* quick section */
+.quick-title {
+    padding: 10px;
+    font-size: 14px;
+}
+
+.quick-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+}
+
+.quick-buttons button {
+    border: none;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: #eee;
+    cursor: pointer;
+}
+
+/* messages */
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* message bubble */
+.message {
+    display: flex;
+    margin: 6px 0;
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.bubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+}
+
+.user .bubble {
+    background: #1fa855;
+    color: white;
+}
+
+.bot .bubble {
+    background: #eee;
+}
+
+/* input */
+.input-area {
+    display: flex;
+    gap: 6px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.input-area input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+}
+
+.input-area button {
+    background: #1fa855;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 20px;
+}
+
+/* 📱 mobile */
+@media (max-width: 600px) {
     .chat-container {
-        max-width: 500px;
-        margin: auto;
+        max-width: 100%;
         height: 100vh;
-        display: flex;
-        flex-direction: column;
-        border-radius: 16px;
-        overflow: hidden;
-        background: #fff;
+        border-radius: 0;
     }
 
-    /* 📱 mobile เต็มจอ */
-    @media (max-width: 600px) {
-        .chat-container {
-            max-width: 100%;
-            height: 100vh;
-            border-radius: 0;
-        }
+    .bubble {
+        font-size: 13px;
     }
+}
 
     /* 💬 chat area */
     #messages {
@@ -173,7 +253,7 @@
     }
 
     .quick-buttons button:hover {
-        background: #d4d4d4;
+        background: #ddd;
     }
 
     .messages {
@@ -294,39 +374,40 @@
     }
 </style>
     
-</head>  <body>  <div class="chat-container">  <div class="header">  
-    Food Delivery Support Chat 💬  
-</div>  
-    
-<div class="quick-title">
-    Please describe the issue you are experiencing:
+</head>  
+    <body>  
+    <body>
+<div class="chat-container">
+
+    <div class="header">
+        Food Delivery Support Chat 💬
+    </div>
+
+    <div class="quick-title">
+        Please describe the issue you are experiencing:
+    </div>
+
+    <div class="quick-buttons">
+        <button onclick="quickSelect('My order is late')">1. Delivery delay</button>
+        <button onclick="quickSelect('Wrong order')">2. Wrong order</button>
+        <button onclick="quickSelect('Food issue')">3. Food issue</button>
+        <button onclick="quickSelect('Not received')">4. Not received</button>
+        <button onclick="quickSelect('Cancel order')">5. Cancel order</button>
+        <button onclick="quickSelect('Other issue')">6. Others</button>
+    </div>
+
+    <div id="messages"></div>
+
+    <div class="input-area">
+        <input type="file" id="imageInput">
+        <input type="text" id="message" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
 </div>
+</body>
     
-<!-- 🔘 MENU -->  
-<div class="quick-buttons">  
-    <button onclick="quickSelect('My order is late')">1. Delivery delay</button>  
-    <button onclick="quickSelect('Wrong order')">2. Wrong order</button>  
-    <button onclick="quickSelect('Food issue')">3. Food issue</button>  
-    <button onclick="quickSelect('Did not receive order')">4. Not received</button>  
-    <button onclick="quickSelect('Cancel my order')">5. Cancel order</button>  
-    <button onclick="quickSelect('Others')">6. Others</button>
-</div>  
-
-<div class="messages" id="messages"></div>  
-
-<div id="typing" class="typing" style="display:none;">Bot is typing...</div>  
-
-<div class="input-area">
-    <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-    
-    <button onclick="document.getElementById('imageInput').click()">📎</button>
-
-    <input id="message" placeholder="Type your message..." />
-    
-    <button class="send-btn" onclick="sendMessage()">Send</button>
-</div>
-
-</div>  
+     
 <script> 
 function getTime() {
     return new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -364,7 +445,7 @@ function addMessage(text, sender) {
     }
 
     messages.appendChild(wrapper);
-    messages.scrollTop = messages.scrollHeight;
+    scrollToBottom();
 
     return bubble; // 🔥 ใช้กับ typing animation
 }
