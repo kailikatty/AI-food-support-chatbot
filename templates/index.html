@@ -222,7 +222,30 @@ body {
      
 <script>
 
-/* add message */
+// ✅ INIT AFTER DOM LOAD
+document.addEventListener("DOMContentLoaded", () => {
+
+    const input = document.getElementById("message");
+    const imageInput = document.getElementById("imageInput");
+
+    /* ENTER SEND */
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    /* IMAGE UPLOAD */
+    if (imageInput) {
+        imageInput.addEventListener("change", handleImageUpload);
+    }
+});
+
+
+/* =========================
+   💬 ADD MESSAGE
+========================= */
 function addMessage(text, sender) {
     const messages = document.getElementById("messages");
 
@@ -238,110 +261,13 @@ function addMessage(text, sender) {
 
     messages.scrollTop = messages.scrollHeight;
 
-    return bubble; // 🔥 ต้องมี!
+    return bubble;
 }
 
-/* send */
-function sendMessage() {
-    const input = document.getElementById("message");
-    const text = input.value.trim();
-    if (!text) return;
 
-    addMessage(text, "user");
-    input.value = "";
-
-    setTimeout(() => {
-        addMessage("We are checking your request...", "bot");
-    }, 500);
-}
-
-/* quick */
-function quickSelect(text) {
-    addMessage(text, "user");
-
-    setTimeout(() => {
-        addMessage("We are processing your request...", "bot");
-    }, 500);
-}
-
-/* upload */
-document.getElementById("imageInput").addEventListener("change", function () {
-    const file = this.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = function (e) {
-        addMessage(`<img src="${e.target.result}" style="max-width:160px;border-radius:10px;">`, "user");
-
-        addMessage(`
-            <span class="typing">
-                Verifying<span>.</span><span>.</span><span>.</span>
-            </span>
-        `, "bot");
-
-        setTimeout(() => {
-            addMessage("Thank you 🙏 We will proceed with your refund.", "bot");
-        }, 2500);
-    };
-
-    reader.readAsDataURL(file);
-});
-
-/* enter send */
-document.getElementById("message").addEventListener("keydown", function(e){
-    if(e.key === "Enter"){
-        e.preventDefault();
-        sendMessage();
-    }
-});
-
-
-// ✨ typing animation (พิมพ์ทีละตัว)
-function typeText(element, text, speed = 20) {
-    let i = 0;
-    element.innerHTML = "";
-
-    function typing() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(typing, speed);
-        }
-    }
-
-    typing();
-}
-
-// ✨ confidence-based delay
-function getTypingDelay(intent) {
-    const delayMap = {
-        "delivery_delay": 800,
-        "wrong_order": 900,
-        "food_issue": 900,
-        "not_received": 1000,
-        "cancel_order": 700
-    };
-
-    return delayMap[intent] || 850;
-}
-
-// ✨ tone enhancer
-function enhanceReply(reply, intent) {
-    const apologyMap = {
-        "delivery_delay": "We're really sorry for the delay 🙏 ",
-        "not_received": "We're really sorry you didn't receive your order 🙏 ",
-        "cancel_order": "No worries! "
-    };
-
-    if (!reply) {
-        return "Sorry, something went wrong. Please try again.";
-    }
-
-    const prefix = apologyMap[intent] || "Thanks for reaching out. ";
-    return prefix + reply;
-}
-
+/* =========================
+   ✉️ SEND MESSAGE (API)
+========================= */
 function sendMessage() {
     const input = document.getElementById("message");
     const text = input.value.trim();
@@ -351,8 +277,12 @@ function sendMessage() {
     addMessage(text, "user");
     input.value = "";
 
-    const typingEl = document.getElementById("typing");
-    typingEl.style.display = "block";
+    // 👇 loading bubble (แทน typingEl)
+    const loading = addMessage(`
+        <span class="typing">
+            Thinking<span>.</span><span>.</span><span>.</span>
+        </span>
+    `, "bot");
 
     fetch("/chat", {
         method: "POST",
@@ -368,86 +298,121 @@ function sendMessage() {
         const delay = getTypingDelay(intent);
 
         setTimeout(() => {
-            typingEl.style.display = "none";
+
+            // 🧹 ลบ loading
+            loading.parentElement.remove();
 
             const finalReply = enhanceReply(data.reply, intent);
 
-            // 🔥 typing animation ใช้ตรงนี้
             const bubble = addMessage("", "bot");
             typeText(bubble, finalReply);
 
         }, delay);
     })
     .catch(() => {
-        typingEl.style.display = "none";
+        loading.parentElement.remove();
         addMessage("⚠️ Network error. Please try again.", "bot");
     });
 }
 
+
+/* =========================
+   🔘 QUICK BUTTON
+========================= */
 function quickSelect(text) {
 
-    // 👉 กด Others → เข้า AI mode
     if (text === "Others") {
         addMessage("Others", "user");
 
-        const botText = "Hi! How can I help you today?";
-        const textEl = addMessage("", "bot");
-        typeText(textEl, botText);
-
+        const bubble = addMessage("", "bot");
+        typeText(bubble, "Hi! How can I help you today?");
         return;
     }
 
-    // 👉 ปุ่มปกติ 1–5
     document.getElementById("message").value = text;
     sendMessage();
 }
 
-// ⌨️ ENTER = SEND
-window.onload = function () {
-    document.getElementById("message").addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            sendMessage();
-        }
-    });
-    const imageInput = document.getElementById("imageInput");
 
-    if (imageInput) {
-    imageInput.addEventListener("change", function () {
-        const file = this.files[0];
-        if (!file) return;
+/* =========================
+   📸 IMAGE UPLOAD
+========================= */
+function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
 
-        const reader = new FileReader();
+    const reader = new FileReader();
 
-        reader.onload = function (e) {
-            const img = `<img src="${e.target.result}" style="max-width:150px; border-radius:10px;">`;
-            addMessage(img, "user");
+    reader.onload = function (ev) {
 
-            fetch("/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: "[image_uploaded]"
-                })
-            });
+        addMessage(`<img src="${ev.target.result}" style="max-width:150px;border-radius:10px;">`, "user");
 
+        const bubble = addMessage("", "bot");
+        typeText(bubble, "Thank you for your photo 🙏 Checking your case...");
 
-        // 🤖 BOT ตอบทันที (ขั้นตอนที่ 1)
-            const textEl = addMessage("", "bot");
-            typeText(textEl, "Thank you for your photo 🙏 We are checking it now. Please wait for a moment.");
+        fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: "[image_uploaded]" })
+        });
 
-
-        // ⏳ step 3 (10 วิ)
         setTimeout(() => {
-            const t3 = addMessage("", "bot");
-            typeText(t3, "Thank you for your patience 🙏 We will proceed with your refund.");
-        }, 10000);
+            const b2 = addMessage("", "bot");
+            typeText(b2, "We will proceed with your refund.");
+        }, 4000);
+    };
 
-     };
     reader.readAsDataURL(file);
-});   
-};
+}
+
+
+/* =========================
+   ✨ TYPE EFFECT
+========================= */
+function typeText(element, text, speed = 20) {
+    let i = 0;
+    element.innerHTML = "";
+
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+
+    typing();
+}
+
+
+/* =========================
+   ⚡ DELAY
+========================= */
+function getTypingDelay(intent) {
+    return {
+        delivery_delay: 800,
+        wrong_order: 900,
+        food_issue: 900,
+        not_received: 1000,
+        cancel_order: 700
+    }[intent] || 850;
+}
+
+
+/* =========================
+   🎯 ENHANCE RESPONSE
+========================= */
+function enhanceReply(reply, intent) {
+    if (!reply) return "Sorry, something went wrong.";
+
+    const map = {
+        delivery_delay: "We're really sorry for the delay 🙏 ",
+        not_received: "We're really sorry 🙏 ",
+        cancel_order: "No worries! "
+    };
+
+    return (map[intent] || "Thanks for reaching out. ") + reply;
+}
+
 </script>  </body>  
 </html>
