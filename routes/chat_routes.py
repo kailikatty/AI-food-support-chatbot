@@ -38,16 +38,8 @@ def chat():
         "This will help us verify the issue quickly.\n\n"
         "Once confirmed, we will process your refund right away."
     )
-    
-    elif intent == "food_issue":
-        reply = (
-        "We're really sorry about your food issue 🙏\n\n"
-        "Could you please describe what was wrong with the food?\n"
-        "(e.g. cold, spoiled, missing items)\n\n"
-        "Also, please upload a photo so we can verify the issue.\n"
-        "Once confirmed, we will arrange a refund for you."
-    )
 
+    # 🔥 STEP 1: ถ้ามี keyword → ไปขั้น refund
     elif intent == "food_issue" and (
         "insect" in user_input or 
         "spoiled" in user_input or 
@@ -55,10 +47,19 @@ def chat():
         "cold" in user_input
     ):
         reply = (
-        "Thank you for the details 🙏\n\n"
-        "Please upload a photo so we can verify the issue.\n\n"
-        "Once confirmed, we will process your refund."
-        )
+        "We're really sorry to hear that 🙏\n\n"
+        "Could you please upload a photo so we can verify the issue?\n\n"
+        "Once confirmed, we will proceed with a refund."
+    )
+
+    # 🔥 STEP 2: ปกติ → ถาม + ขอรูป
+    elif intent == "food_issue":
+        reply = (
+        "We're really sorry about your food issue 🙏\n\n"
+        "Could you please describe what was wrong with the food?\n"
+        "(e.g. cold, spoiled, missing items)\n\n"
+        "Also, please upload a photo so we can verify the issue."
+    )
 
     elif intent == "food_issue" and ("cold" in user_input or "spoiled" in user_input):
         reply = "Thank you for the details 🙏 Based on your description, we will proceed with a refund."
