@@ -25,6 +25,9 @@ def chat():
         
 
     # 🧠 rule-based (เฉพาะเคสหลัก)
+    elif any(word in user_input for word in ["delivery man", "rider", "driver", "courier"]):
+        reply = "We're really sorry about your experience with the delivery staff 🙏 We will report this issue immediately and take appropriate action."
+        
     elif intent == "delivery_delay":
         reply = "Your order 001 is still on the way. It should arrive shortly. If the delay continues, we can offer a discount for your next order."
 
