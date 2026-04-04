@@ -10,16 +10,26 @@ def chat():
     data = request.get_json()
     user_input = data.get("message", "")
 
+    # 🔍 detect intent
     intent = detect_intent(user_input)
-    result = process_issue(intent)
 
-    if result:
-        reply = result
-    else:
-        reply = generate_ai_response(user_input, intent)
+    # 🧠 rule-based responses (สำคัญมาก)
+    if intent == "delivery_delay":
+        reply = "Your order 001 is still on the way. It should arrive shortly. If the delay continues, we can offer a discount for your next order."
 
-    if intent in ["delivery_delay", "wrong_order", "food_issue"]:
-        reply = result
+    elif intent == "wrong_order":
+        reply = "A refund has been issued for order 001. It will be processed within a few business days."
+
+    elif intent == "food_issue":
+        reply = "We have issued a refund for order 001 due to the food quality issue."
+
+    elif intent == "not_received":
+        reply = "We’re checking your order now. If it was not delivered, you will receive a full refund."
+
+    elif intent == "cancel_order":
+        reply = "Your order has been cancelled. If payment was completed, the refund will be processed shortly."
+
+    # 🧠 fallback → AI (รองรับถามต่อ เช่น refund)
     else:
         reply = generate_ai_response(user_input, intent)
 
@@ -27,3 +37,4 @@ def chat():
         "reply": reply,
         "intent": intent
     })
+    
