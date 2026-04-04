@@ -3,6 +3,13 @@ from services.intent_service import detect_intent
 from services.order_service import process_issue
 from services.ai_service import generate_ai_response
 
+user_state = {
+    "food_issue": {
+        "described": False,
+        "image_uploaded": False
+    }
+}
+
 chat_bp = Blueprint("chat", __name__)
 
 @chat_bp.route("/chat", methods=["POST"])
@@ -32,21 +39,47 @@ def chat():
             "Once confirmed, we will process your refund right away."
         )
 
-    # 🔥 FOOD ISSUE (STEP 1 → มีรายละเอียดแล้ว)
-    elif intent == "food_issue" and any(word in user_input for word in ["insect", "spoiled", "bad", "cold"]):
+    # 🔥 FOOD ISSUE FLOW
+
+    elif intent == "food_issue":
+
+    # 🟡 CASE 1: user ส่งรูปก่อน (ยังไม่อธิบาย)
+    if user_state["food_issue"]["image_uploaded"] and not user_state["food_issue"]["described"]:
         reply = (
-            "We're really sorry to hear that 🙏\n\n"
-            "Please upload a photo so we can verify the issue.\n\n"
-            "Once confirmed, we will proceed with a refund."
+            "Thank you for your photo 🙏\n\n"
+            "Could you please describe what was wrong with the food?"
         )
 
-    # 🔥 FOOD ISSUE (STEP 2 → ยังไม่มีรายละเอียด)
-    elif intent == "food_issue" or "food" in user_input:
+    # 🟡 CASE 2: user อธิบายแล้ว แต่ยังไม่ส่งรูป
+    elif any(word in user_input for word in ["insect", "spoiled", "bad", "cold"]):
+        user_state["food_issue"]["described"] = True
+
+        reply = (
+            "We're really sorry to hear that 🙏\n\n"
+            "Could you please upload a photo so we can verify the issue?"
+        )
+
+    # 🟡 CASE 3: user ทำครบแล้ว → refund
+    elif user_state["food_issue"]["described"] and user_state["food_issue"]["image_uploaded"]:
+        reply = (
+            "Thank you for your patience 🙏\n\n"
+            "We have verified the issue and will proceed with your refund.\n"
+            "We sincerely apologize for the inconvenience."
+        )
+
+        # reset state
+        user_state["food_issue"] = {
+            "described": False,
+            "image_uploaded": False
+        }
+
+    # 🟡 CASE 4: เริ่มต้น
+    else:
         reply = (
             "We're really sorry about your food issue 🙏\n\n"
             "Could you please describe what was wrong with the food?\n"
             "(e.g. cold, spoiled, missing items)\n\n"
-            "Also, please upload a photo so we can verify the issue."
+            "You can also upload a photo for verification."
         )
 
     # 🔥 DELIVERY DELAY
