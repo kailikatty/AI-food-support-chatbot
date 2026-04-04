@@ -38,7 +38,7 @@ def chat():
         "This will help us verify the issue quickly.\n\n"
         "Once confirmed, we will process your refund right away."
     )
-
+    
     elif intent == "food_issue":
         reply = (
         "We're really sorry about your food issue 🙏\n\n"
@@ -47,6 +47,18 @@ def chat():
         "Also, please upload a photo so we can verify the issue.\n"
         "Once confirmed, we will arrange a refund for you."
     )
+
+    elif intent == "food_issue" and (
+        "insect" in user_input or 
+        "spoiled" in user_input or 
+        "bad" in user_input or 
+        "cold" in user_input
+    ):
+        reply = (
+        "Thank you for the details 🙏\n\n"
+        "Please upload a photo so we can verify the issue.\n\n"
+        "Once confirmed, we will process your refund."
+        )
 
     elif intent == "food_issue" and ("cold" in user_input or "spoiled" in user_input):
         reply = "Thank you for the details 🙏 Based on your description, we will proceed with a refund."
