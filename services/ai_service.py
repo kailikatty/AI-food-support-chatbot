@@ -24,15 +24,15 @@ Conversation:
 Customer: {user_input}
 """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=prompt
+)
 
-    reply = response.text
+reply = response.text
 
-    # save memory
-    chat_history.append(f"Customer: {user_input}")
-    chat_history.append(f"Agent: {reply}")
+# save memory
+chat_history.append(f"Customer: {user_input}")
+chat_history.append(f"Agent: {reply}")
 
-    return reply
+return reply
