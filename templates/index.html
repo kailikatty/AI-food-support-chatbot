@@ -5,7 +5,7 @@
 
 <style>
 body {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: sans-serif;
     background: #f0f2f5;
 }
 
@@ -17,7 +17,6 @@ body {
     border-radius: 16px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     overflow: hidden;
 }
 
@@ -31,111 +30,37 @@ body {
 .quick-title {
     padding: 10px;
     font-size: 13px;
-    color: #555;
-    background: #fafafa;
 }
 
 .quick-buttons {
     padding: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    background: #fafafa;
-    border-bottom: 1px solid #eee;
 }
 
 .quick-buttons button {
+    margin: 3px;
     padding: 6px 10px;
     border: none;
-    background: #e9ecef;
     border-radius: 20px;
     cursor: pointer;
 }
 
 .messages {
     flex: 1;
-    padding: 12px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-.message {
-    display: flex;
-    gap: 6px;
-    margin: 6px 0;
-}
-
-.message.user {
-    justify-content: flex-end;
-}
-
-.message.bot {
-    justify-content: flex-start;
-}
-
-.bubble {
     padding: 10px;
-    border-radius: 14px;
-    max-width: 75%;
-}
-
-.user .bubble {
-    background: #00b14f;
-    color: white;
-}
-
-.bot .bubble {
-    background: #f1f3f5;
-}
-
-.avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.user-avatar {
-    background: #00b14f;
-    color: white;
-}
-
-.bot-avatar {
-    background: #e9ecef;
-}
-
-.time {
-    font-size: 10px;
-    opacity: 0.6;
+    overflow-y: auto;
 }
 
 .input-area {
     display: flex;
-    border-top: 1px solid #eee;
 }
 
 input {
     flex: 1;
-    padding: 14px;
-    border: none;
-    outline: none;
-}
-
-button.send-btn {
-    background: #00b14f;
-    color: white;
-    border: none;
-    padding: 14px;
-    cursor: pointer;
-}
-
-.typing {
-    display: none;
     padding: 10px;
-    font-size: 12px;
+}
+
+button {
+    padding: 10px;
 }
 </style>
 </head>
@@ -144,122 +69,62 @@ button.send-btn {
 
 <div class="chat-container">
 
-<div class="header">Food Delivery Support 💬</div>
+<div class="header">Food Support Chat 💬</div>
 
 <div class="quick-title">
-    Please select the issue you are experiencing:
+Please select the issue:
 </div>
 
 <div class="quick-buttons">
-    <button data-msg="My order is late">1. Delivery delay</button>
-    <button data-msg="Wrong order">2. Wrong order</button>
-    <button data-msg="Food quality bad">3. Food issue</button>
-    <button data-msg="Did not receive order">4. Not received</button>
-    <button data-msg="Cancel my order">5. Cancel order</button>
+<button onclick="quick('My order is late')">1</button>
+<button onclick="quick('Wrong order')">2</button>
+<button onclick="quick('Food issue')">3</button>
+<button onclick="quick('Not received')">4</button>
+<button onclick="quick('Cancel order')">5</button>
 </div>
 
 <div id="messages" class="messages"></div>
 
-<div id="typing" class="typing">Bot is typing...</div>
-
 <div class="input-area">
-    <input id="message" placeholder="Type your message..." />
-    <button id="sendBtn" class="send-btn">Send</button>
+<input id="msg">
+<button onclick="send()">Send</button>
 </div>
 
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-let lastMessage = "";
-
-function getTime() {
-    return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+function add(text) {
+    const box = document.getElementById("messages");
+    box.innerHTML += "<div>" + text + "</div>";
 }
 
-function addMessage(text, sender) {
-    const messages = document.getElementById("messages");
-
-    const msg = document.createElement("div");
-    msg.className = "message " + sender;
-
-    const avatar = sender === "user"
-        ? <div class="avatar user-avatar">👩</div>
-        : `<div class="avatar bot-avatar">🤖</div>`;
-
-    const bubble = `
-        <div class="bubble">
-            ${text}
-            <div class="time">${getTime()}</div>
-        </div>
-    `;
-
-    msg.innerHTML = sender === "user"
-        ? bubble + avatar
-        : avatar + bubble;
-
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
-}
-
-function sendMessage() {
-    const input = document.getElementById("message");
-    const text = input.value.trim();
+function send() {
+    const input = document.getElementById("msg");
+    const text = input.value;
 
     if (!text) return;
 
-    lastMessage = text;
-
-    addMessage(text, "user");
-    input.value = "";
-
-    const typing = document.getElementById("typing");
-    typing.style.display = "block";
+    add("You: " + text);
 
     fetch("/chat", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({message: text})
+        body: JSON.stringify({message:text})
     })
-    .then(res => res.json())
-    .then(data => {
-        typing.style.display = "none";
-        addMessage(data.reply, "bot");
-    })
-    .catch(() => {
-        typing.style.display = "none";
-        addMessage(`⚠️ Network error <br><button onclick="retryMessage()">Try again</button>`, "bot");
-    });
+    .then(r => r.json())
+    .then(d => add("Bot: " + d.reply))
+    .catch(() => add("Error"));
+
+    input.value = "";
 }
 
-function retryMessage() {
-    if (lastMessage) {
-        document.getElementById("message").value = lastMessage;
-        sendMessage();
-    }
+function quick(text) {
+    document.getElementById("msg").value = text;
+    send();
 }
 
-/* ✅ FIX ปุ่มหัวข้อ */
-document.querySelectorAll(".quick-buttons button").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const text = btn.getAttribute("data-msg");
-        document.getElementById("message").value = text;
-        sendMessage();
-    });
-});
-
-/* ✅ FIX ปุ่ม Send */
-document.getElementById("sendBtn").addEventListener("click", sendMessage);
-
-/* ✅ FIX Enter */
-document.getElementById("message").addEventListener("keydown", function(e){
-    if(e.key === "Enter"){
-        e.preventDefault();
-        sendMessage();
-    }
-});
-
+document.getElementById("msg").addEventListener("keydown", e=>{
+    if(e.key==="Enter") send();
 });
 </script>
 
