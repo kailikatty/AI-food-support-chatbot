@@ -17,9 +17,9 @@ def chat():
 
     is_follow_up = any(word in user_input for word in follow_up_keywords)
 
-    # ✅ ถ้าเป็น follow-up → ให้ AI ตอบเลย
-    if is_follow_up:
+    if intent != "unknown" and is_follow_up:
         reply = generate_ai_response(user_input, intent)
+        
 
     # 🧠 rule-based (เฉพาะเคสหลัก)
     elif intent == "delivery_delay":
@@ -36,6 +36,7 @@ def chat():
 
     elif intent == "cancel_order":
         reply = "Your order has been cancelled. If payment was completed, the refund will be processed shortly."
+
 
     # 🤖 default → AI
     else:
