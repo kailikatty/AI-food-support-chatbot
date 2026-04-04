@@ -16,7 +16,7 @@ def chat():
     if result:
         reply = result
     else:
-        reply = generate_ai_response(user_input)
+        reply = generate_ai_response(user_input, intent)
 
     return jsonify({
         "reply": reply,
