@@ -1,37 +1,53 @@
 import os
 from google import genai
 
+# ✅ init client
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
+# ✅ FIX: ต้องประกาศก่อนใช้
+chat_history = []
+
 def generate_ai_response(user_input, intent=None):
-    history = "\n".join(chat_history)
+    global chat_history
 
-    prompt = f"""
-    You are a professional food delivery support agent.
+    try:
+        # ✅ limit history กันยาวเกิน
+        history = "\n".join(chat_history[-6:])
 
-    Rules:
-    - Always apologize first when there is a problem
-    - Answer clearly and politely
-    - If user asks follow-up questions, continue naturally
-    - If user asks about refund → explain timeline (3-5 days)
+        prompt = f"""
+        You are a professional food delivery support agent.
 
-    Conversation:
-    {history}
+        Rules:
+        - Always apologize first when there is a problem
+        - Be polite and helpful
+        - Answer clearly and naturally
+        - If user asks follow-up questions, continue the conversation
+        - If user asks about refund → explain timeline (3-5 days)
 
-    Customer: {user_input}
-    """
+        Conversation:
+        {history}
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
+        Customer: {user_input}
+        """
 
-    reply = response.text
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",  # ✅ เสถียรกว่า 2.5
+            contents=prompt
+        )
 
-    # save memory
-    chat_history.append(f"Customer: {user_input}")
-    chat_history.append(f"Agent: {reply}")
+        # ✅ กัน None
+        reply = response.text if response.text else "Sorry, I couldn't understand that."
 
-    chat_history[:] = chat_history[-6:] #limit memory 
+        # ✅ save memory
+        chat_history.append(f"Customer: {user_input}")
+        chat_history.append(f"Agent: {reply}")
 
-    return reply
+        # ✅ limit memory จริง
+        chat_history = chat_history[-10:]
+
+        return reply
+
+    except Exception as e:
+        print("AI ERROR:", e)  # 🔥 ดูใน Render logs
+        return "Sorry, I couldn't process that. Please try again."
+
