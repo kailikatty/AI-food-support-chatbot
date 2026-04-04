@@ -220,47 +220,80 @@ body {
 </div>
     
      
-<script> 
-function getTime() {
-    return new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-}
-function scrollToBottom() {
-    const messages = document.getElementById("messages");
-    messages.scrollTop = messages.scrollHeight;
-}
+<script>
 
-// ✨ Avatar + Bubble version
+/* add message */
 function addMessage(text, sender) {
     const messages = document.getElementById("messages");
 
     const wrapper = document.createElement("div");
     wrapper.classList.add("message", sender);
 
-    const avatar = document.createElement("div");
-    avatar.classList.add("avatar", sender === "user" ? "user-avatar" : "bot-avatar");
-    avatar.innerText = sender === "user" ? "🧑" : "🤖";
-
     const bubble = document.createElement("div");
     bubble.classList.add("bubble");
+    bubble.innerHTML = text;
 
-    bubble.innerHTML = `
-        ${text}
-        <div class="time">${getTime()}</div>
-    `;
-
-    if (sender === "user") {
-        wrapper.appendChild(bubble);
-        wrapper.appendChild(avatar);
-    } else {
-        wrapper.appendChild(avatar);
-        wrapper.appendChild(bubble);
-    }
-
+    wrapper.appendChild(bubble);
     messages.appendChild(wrapper);
-    scrollToBottom();
 
-    return bubble; // 🔥 ใช้กับ typing animation
+    messages.scrollTop = messages.scrollHeight;
 }
+
+/* send */
+function sendMessage() {
+    const input = document.getElementById("message");
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    setTimeout(() => {
+        addMessage("We are checking your request...", "bot");
+    }, 500);
+}
+
+/* quick */
+function quickSelect(text) {
+    addMessage(text, "user");
+
+    setTimeout(() => {
+        addMessage("We are processing your request...", "bot");
+    }, 500);
+}
+
+/* upload */
+document.getElementById("imageInput").addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        addMessage(`<img src="${e.target.result}" style="max-width:160px;border-radius:10px;">`, "user");
+
+        addMessage(`
+            <span class="typing">
+                Verifying<span>.</span><span>.</span><span>.</span>
+            </span>
+        `, "bot");
+
+        setTimeout(() => {
+            addMessage("Thank you 🙏 We will proceed with your refund.", "bot");
+        }, 2500);
+    };
+
+    reader.readAsDataURL(file);
+});
+
+/* enter send */
+document.getElementById("message").addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
 
 // ✨ typing animation (พิมพ์ทีละตัว)
 function typeText(element, text, speed = 20) {
