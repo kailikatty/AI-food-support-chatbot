@@ -302,13 +302,13 @@ function sendMessage() {
 
         setTimeout(() => {
 
-            // 🧹 ลบ loading
+        if (loading && loading.parentElement)
+        {
             loading.parentElement.remove();
-
-            const finalReply = enhanceReply(data.reply, intent);
+        }
 
             const bubble = addMessage("", "bot");
-            typeText(bubble, finalReply);
+            typeText(bubble, data.reply);
 
         }, delay);
     })
@@ -400,7 +400,6 @@ function getTypingDelay(intent) {
         cancel_order: 700
     }[intent] || 850;
 }
-
 
 </script>  </body>  
 </html>
