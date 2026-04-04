@@ -32,10 +32,24 @@ def chat():
         reply = "Your order 001 is still on the way. It should arrive shortly. If the delay continues, we can offer a discount for your next order."
 
     elif intent == "wrong_order":
-        reply = "A refund has been issued for order 001. It will be processed within a few business days."
+        reply = (
+        "We're really sorry about the wrong order 🙏\n\n"
+        "Could you please upload a photo of your receipt or the items you received?\n"
+        "This will help us verify the issue quickly.\n\n"
+        "Once confirmed, we will process your refund right away."
+    )
 
     elif intent == "food_issue":
-        reply = "We have issued a refund for order 001 due to the food quality issue."
+        reply = (
+        "We're really sorry about your food issue 🙏\n\n"
+        "Could you please describe what was wrong with the food?\n"
+        "(e.g. cold, spoiled, missing items)\n\n"
+        "Also, please upload a photo so we can verify the issue.\n"
+        "Once confirmed, we will arrange a refund for you."
+    )
+
+    elif intent == "food_issue" and ("cold" in user_input or "spoiled" in user_input):
+        reply = "Thank you for the details 🙏 Based on your description, we will proceed with a refund."
 
     elif intent == "not_received":
         reply = "We’re checking your order now. If it was not delivered, you will receive a full refund."
