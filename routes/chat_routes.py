@@ -90,7 +90,9 @@ def chat():
 
     # 🔥 DELIVERY DELAY
     elif intent == "delivery_delay":
-        reply = "Your order is still on the way. It should arrive shortly."
+        reply = "We’re really sorry for the delay 🙏 We completely understand how frustrating this must be.
+Our team is currently checking your order status and will make sure this is resolved for you as soon as possible.
+💚 We’re here to help you every step of the way."
 
     # 🔥 NOT RECEIVED
     elif intent == "not_received":
