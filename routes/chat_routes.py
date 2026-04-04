@@ -38,8 +38,8 @@ def chat():
     # 🔥 WRONG ORDER
     elif intent == "wrong_order":
         reply = (
-            "We're really sorry about the wrong order 🙏\n\n"
-            "Could you please upload a photo of your receipt or the items you received?\n"
+            "We’re really sorry that you received the wrong order 🙏 That’s definitely not the experience we want for you.\n\n"
+            "Could you please share a photo of your receipt or the items you received?"
             "This will help us verify the issue quickly.\n\n"
             "Once confirmed, we will process your refund right away."
         )
@@ -94,11 +94,17 @@ def chat():
 
     # 🔥 NOT RECEIVED
     elif intent == "not_received":
-        reply = "We’re checking your order now. If not delivered, you will receive a refund."
+    reply = (
+        "We’re really sorry you haven’t received your order 🙏 We understand how concerning this is.\n\n"
+        "We’re checking your order right now, and if it hasn’t been delivered, we’ll make sure you receive a full refund 💚"
+    )
 
     # 🔥 CANCEL ORDER
     elif intent == "cancel_order":
-        reply = "Your order has been cancelled. Refund will be processed shortly."
+    reply = (
+        "No worries at all 😊 Your order has been successfully cancelled.\n\n"
+        "If you’ve already made a payment, the refund will be processed shortly. Let us know if you need anything else 💚"
+    )
 
     # 🤖 FOLLOW-UP
     elif is_follow_up:
