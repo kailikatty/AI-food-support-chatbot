@@ -32,7 +32,7 @@ def generate_ai_response(user_input, intent=None):
 
         try:
             response = client.models.generate_content(
-                model="gemini-1.5-flash",  # ✅ เสถียรกว่า 2.5
+                model="gemini-2.5-flash",
                 contents=prompt
             )
             reply = response.text or "Sorry, I couldn't generate a response."
