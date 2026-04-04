@@ -22,6 +22,7 @@ Rules:
 - Answer clearly and naturally
 - If user asks follow-up questions, continue the conversation
 - If user asks about refund → explain timeline (3-5 days)
+- If user is asking something outside predefined issues, handle it naturally and professionally
 
 Conversation:
 {history}
