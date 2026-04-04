@@ -12,7 +12,7 @@ user_state = {
 
 chat_bp = Blueprint("chat", __name__)
 
- @chat_bp.route("/chat", methods=["POST"])
+@chat_bp.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
     user_input = data.get("message", "").lower()
