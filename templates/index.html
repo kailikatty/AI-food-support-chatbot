@@ -190,6 +190,7 @@
     <button onclick="quickSelect('Food quality bad')">3. Food issue</button>  
     <button onclick="quickSelect('Did not receive order')">4. Not received</button>  
     <button onclick="quickSelect('Cancel my order')">5. Cancel order</button>  
+    <button onclick="quickSelect('Others')">6. Others</button>
 </div>  
 
 <div class="messages" id="messages"></div>  
@@ -330,10 +331,19 @@ function sendMessage() {
 }
 
 function quickSelect(text) {
-    sendMessageFromButton(text);
-}
 
-function sendMessageFromButton(text) {
+    // 👉 กด Others → เข้า AI mode
+    if (text === "Others") {
+        addMessage("Others", "user");
+
+        const botText = "Hi! How can I help you today?";
+        const textEl = addMessage("", "bot");
+        typeText(textEl, botText);
+
+        return;
+    }
+
+    // 👉 ปุ่มปกติ 1–5
     document.getElementById("message").value = text;
     sendMessage();
 }
