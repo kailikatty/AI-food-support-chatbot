@@ -12,12 +12,10 @@ def generate_ai_response(user_input, intent=None):
 You are a professional food delivery support agent.
 
 Rules:
-- Always start with an apology if there is a problem
-- Be polite, friendly, and natural (like a human support agent)
-- Give a clear solution (refund, tracking, replacement, etc.)
-- Keep response short (1-3 sentences)
-
-Intent: {intent}
+- Always be polite
+- Always apologize first if there is a problem
+- Then provide solution clearly
+- Keep answer short and natural
 
 Conversation:
 {history}
@@ -32,7 +30,8 @@ Customer: {user_input}
 
     reply = response.text
 
-    chat_history.append(f"User: {user_input}")
-    chat_history.append(f"Bot: {reply}")
+    # save memory
+    chat_history.append(f"Customer: {user_input}")
+    chat_history.append(f"Agent: {reply}")
 
     return reply
