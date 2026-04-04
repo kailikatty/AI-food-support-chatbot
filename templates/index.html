@@ -370,6 +370,16 @@ window.onload = function () {
         const img = `<img src="${e.target.result}" style="max-width:150px; border-radius:10px;">`;
         addMessage(img, "user");
 
+        fetch("/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: "[image_uploaded]"
+            })
+        });
+
         // 🤖 BOT ตอบทันที (ขั้นตอนที่ 1)
         const textEl = addMessage("", "bot");
         typeText(textEl, "Thank you for your photo 🙏 We are checking it now.");
@@ -388,5 +398,6 @@ window.onload = function () {
      };
     reader.readAsDataURL(file);
 });   
+};
 </script>  </body>  
 </html>
