@@ -97,18 +97,17 @@ def chat():
 
     # 🔥 DELIVERY STAFF
     elif any(word in user_input for word in ["delivery man", "rider", "driver", "courier"]):
-        reply = """We’re really sorry to hear about your experience with our delivery staff. 🙏 
-    This isn't the level of service we aim to provide. We will look into this matter and take appropriate action to prevent it from happening again.
+        reply = """We’re really sorry to hear about your experience with our delivery staff. 🙏\n\n 
+    This isn't the level of service we aim to provide. We will look into this matter and take appropriate action to prevent it from happening again.\n\n
     Please let us know if there’s anything else we can assist you with."""
 
     # 🔥 WRONG ORDER
     elif intent == "wrong_order":
-        reply = (
-            "We’re really sorry that you received the wrong order. 🙏\n\n"
-            "Could you please share a photo of your receipt or the items you received?"\n
-            "This will help us verify the issue quickly.\n\n"
-            "Once confirmed, we will process your refund right away."
-        )
+        reply = """We’re really sorry that you received the wrong order. 🙏\n\n
+    Could you please share a photo of your receipt or the items you received?\n
+    This will help us verify the issue quickly.\n\n
+    Once confirmed, we will process your refund right away."""
+        
 
     # 🔥 FOOD ISSUE FLOW (แก้ตรงนี้สำคัญสุด)
     elif intent == "food_issue":
