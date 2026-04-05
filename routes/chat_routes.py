@@ -88,8 +88,12 @@ def chat():
 
 
     # 🔥 OTHERS → AI
-    if intent == "others" or intent == "unknown":
-        reply = generate_ai_response(user_input, None)
+    if intent in ["others", "unknown"]:
+        try:
+            reply = generate_ai_response(user_input, None)
+        except Exception as e:
+            print(AI ERROR:", e)
+            reply = "Sorry, something went wrong. Please try again.🙏"
 
     # 🔥 DELIVERY STAFF
     elif any(word in user_input for word in ["delivery man", "rider", "driver", "courier"]):
