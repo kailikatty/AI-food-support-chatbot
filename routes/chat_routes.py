@@ -92,7 +92,7 @@ def chat():
         try:
             reply = generate_ai_response(user_input, None)
         except Exception as e:
-            print(AI ERROR:", e)
+            print("AI ERROR:", e)
             reply = "Sorry, something went wrong. Please try again.🙏"
 
     # 🔥 DELIVERY STAFF
