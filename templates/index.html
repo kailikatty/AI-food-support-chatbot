@@ -271,6 +271,7 @@ function addMessage(text, sender) {
 
     wrapper.appendChild(bubble);
     messages.appendChild(wrapper);
+    setTimeout(scrollToBottom, 50);
 
     messages.scrollTop = messages.scrollHeight;
 
@@ -392,6 +393,8 @@ function typeText(element, text, speed = 20) {
             element.innerHTML += text.charAt(i);
             i++;
             setTimeout(typing, speed);
+        } else {
+            scrollToBottom();
         }
     }
 
