@@ -244,8 +244,18 @@ document.addEventListener("DOMContentLoaded", () => {
         imageInput.addEventListener("change", handleImageUpload);
     }
 });
+    
+/* =========================
+   ↕️ AUTO SCROLL
+========================= */
 
-
+function scrollToBottom() {
+    const messages = document.getElementById("messages");
+    messages.scrollTo({
+        top: messages.scrollHeight,
+        behavior: "smooth"   // ✨ ลื่น ๆ แบบ UX ดี
+    });
+}
 /* =========================
    💬 ADD MESSAGE
 ========================= */
