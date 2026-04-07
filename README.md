@@ -8,10 +8,15 @@ Built as a full-stack application, combining a Python Flask backend with a respo
 🚀 Features
 
 🤖 AI-powered responses using Gemini API
+
 💬 Human-like conversation flow for customer support
+
 📦 Handles common scenarios (orders, delays, issues, assistance)
+
 ⚡ Real-time chat interface with typing animation
+
 🧠 Smart workflow design for better user experience
+
 📱 Lightweight and responsive UI
 
 
