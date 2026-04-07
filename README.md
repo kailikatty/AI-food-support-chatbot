@@ -1,4 +1,4 @@
-🍔 Food Delivery Support Chatbot 🤖
+🍔 AI Food Support Chatbot 🤖
 
 An AI-powered customer support chatbot designed to handle food delivery inquiries with natural, human-like conversations.
 Built as a full-stack application, combining a Python Flask backend with a responsive web interface, focusing on intelligent workflows and user experience.
